@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Expense</title>
+    <style>
+        /* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1e1e2f, #2a2a4a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 20px;
+    color: #fff;
+}
+
+/* Delete Container */
+.delete-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    max-width: 400px;
+    width: 100%;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+h2 {
+    color: #ffcc00;
+    margin-bottom: 15px;
+}
+
+p {
+    font-size: 16px;
+    color: #ddd;
+    margin-bottom: 10px;
+}
+
+/* Button Container */
+.btn-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Buttons */
+.btn {
+    text-decoration: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: 0.3s;
+    text-align: center;
+    display: inline-block;
+    width: 48%;
+    font-weight: bold;
+    border: none;
+}
+
+/* Delete Button */
+.btn-danger {
+    background: linear-gradient(45deg, #ff0000, #dc3545);
+    color: white;
+}
+
+.btn-danger:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 4px rgba(255, 0, 0, 0.8);
+}
+
+/* Cancel Button */
+.btn-cancel {
+    background: linear-gradient(45deg, #6c757d, #495057);
+    color: white;
+}
+
+.btn-cancel:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="delete-container">
+        <h2>Are you sure?</h2>
+        <p><strong>Expense:</strong> {{ expense.expense }}</p>
+        <p><strong>Amount:</strong> ₹{{ expense.amount }}</p>
+        <p><strong>Category:</strong> {{ category }}</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="btn-container">
+                <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                <a href="{% url 'month_history' %}" class="btn btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
