@@ -1,0 +1,499 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        img {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        #imageModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        #modalImage {
+            display: block;
+            margin: 10% auto;
+            max-width: 9000px;
+            max-height: 8000vh;
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Expense Details</h1>
+
+ Form for selecting month and year 
+<form method="GET" id="filterForm">
+    <label for="month">Select Month:</label>
+    <select id="month" name="month" required>
+        <option value="">-- Select Month --</option>
+        {% for month_num, month_name in months_list %}
+            <option value="{{ month_num }}" {% if selected_month == month_num %}selected{% endif %}>
+                {{ month_name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="year">Select Year:</label>
+    <input type="number" id="year" name="year" min="2000" max="2100" required value="{{ selected_year }}">
+
+    <button type="submit">Filter</button>
+</form>
+
+{% if expenses %}
+<h3>Expenses for {{ selected_month_name }} {{ selected_year }}</h3>
+
+
+    <table>
+        <tr>
+            <th>Serial No.</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Amount (₹)</th>
+            <th>Time (IST)</th>
+            <th>Receipt</th>
+        </tr>
+
+        {% for expense in expenses %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ expense.category }}</td>
+            <td>{{ expense.expense }}</td>
+            <td>{{ expense.amount }}</td>
+            <td>{{ expense.date }} {{ expense.time }}</td>
+            <td>
+                {% if expense.image_url %}
+                    <img src="{{ expense.image_url }}" alt="Receipt" onclick="openImage('{{ expense.image_url }}')">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No expenses found for {{selected_month_name }} {{ selected_year }}.</p>
+{% endif %}
+
+ Image Modal 
+<div id="imageModal">
+    <span class="close-btn" onclick="closeImage()">&times;</span>
+    <img id="modalImage" src="" alt="Expanded Receipt">
+</div>
+
+<script>
+    function openImage(src) {
+        document.getElementById("modalImage").src = src;
+        document.getElementById("imageModal").style.display = "flex";
+    }
+
+    function closeImage() {
+        document.getElementById("imageModal").style.display = "none";
+    }
+
+    // Auto-submit form on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        if (!window.location.search) {
+            document.getElementById("filterForm").submit();
+        }
+    });
+</script>
+
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+   <style>
+    /* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #2a2a4a);
+    color: #fff;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+#timer {
+    position: absolute;
+    top: 80px; /* Positioned just below the Home button */
+    right: 60px;
+    font-size: 25px;
+    font-weight: bold;
+    color: #ffcc00;
+    background:  linear-gradient(135deg, #1e1e2f, #2a2a4a);
+    padding: 5px 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+h1, h3 {
+    color: #ffcc00;
+}
+
+/* Table Styling */
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+th, td {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background: linear-gradient(45deg, #4CAF50, #388E3C);
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Form Styling */
+form {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+
+
+
+
+
+select, input, button {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+}
+
+select, input {
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    appearance: none;
+    text-align: center;
+}
+
+button {
+    background: linear-gradient(45deg, #ffcc00, #ff9900);
+    color: #1e1e2f;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+}
+
+/* Image Modal */
+.thumbnail {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.thumbnail:hover {
+    transform: scale(1.1);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    max-width: 80vw;
+    max-height: 80vh;
+    border-radius: 10px;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Delete Button */
+.delete-btn {
+    background-color: #ff4d4d;
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.top-right-buttons {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.top-right-buttons a {
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.top-right-buttons a:hover {
+    background-color: #ffcc00;
+    color: black;
+    transform: scale(1.1);
+}
+.delete-btn:hover {
+    background-color: #cc0000;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+}
+   </style>
+</head>
+<body>
+    <div class="top-right-buttons">
+        <a href="{% url 'home' %}">Home</a>
+        
+        </div>
+
+        <div id="timer"></div>
+<h1>Expense Details</h1>
+
+<form method="GET">
+    <label for="month">Select Month:</label>
+    <select id="month" name="month" required>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+
+    <label for="year">Select Year:</label>
+    <input type="number" id="year" name="year" min="2000" max="2100" required>
+
+    <button type="submit">Filter</button>
+</form>
+
+{% if expenses %}
+    <h3>Expenses for {{ selected_month_name }} {{ selected_year }}</h3>
+
+    <table>
+        <tr>
+            <th>Serial No.</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Amount (₹)</th>
+            <th>Time (IST)</th>
+            <th>Image</th>
+            <th>Action</th>
+        </tr>
+
+        {% for expense in expenses %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ expense.category }}</td>
+            <td>{{ expense.expense }}</td>
+            <td>{{ expense.amount }}</td>
+            <td>{{ expense.date }} {{ expense.time }}</td>
+            <td>
+                {% if expense.image_url %}
+                    <img src="{{ expense.image_url }}" alt="Receipt" class="thumbnail" onclick="showImage('{{ expense.image_url }}')">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
+           <td>
+
+                {% if expense.id %}
+                <a href="{% url 'delete' expense.id %}" class="delete-btn" >Delete</a>
+                {% else %}
+                <span>No ID Found</span>
+                {% endif %}
+
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No expenses found for {{ selected_month }} {{ selected_year }}.</p>
+{% endif %}
+
+<!-- Popup Modal for Image -->
+
+
+<div id="imageModal" class="modal" style="display: none;" onclick="hideImage()">
+    <span class="close" onclick="hideImage()">&times;</span>
+    <img class="modal-content" id="fullImage">
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    setDefaultMonthAndYear();
+});
+
+function startTimer() {
+        const timerElement = document.getElementById('timer');
+        
+        setInterval(() => {
+            let currentTime = new Date();
+            let hours = currentTime.getHours().toString().padStart(2, '0');
+            let minutes = currentTime.getMinutes().toString().padStart(2, '0');
+            let seconds = currentTime.getSeconds().toString().padStart(2, '0');
+            
+            timerElement.innerHTML = `${hours}:${minutes}:${seconds}`; // Format: hh:mm:ss
+        }, 1000);
+    }
+
+    // Directly start the timer when the page loads
+    startTimer();
+
+// Function to set default month and year based on current date
+function setDefaultMonthAndYear() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let selectedMonth = urlParams.get('month');
+    let selectedYear = urlParams.get('year');
+
+    let today = new Date();
+    let currentMonth = today.getMonth() + 1; // JavaScript months are 0-based
+    let currentYear = today.getFullYear();
+
+    if (!selectedMonth) {
+        selectedMonth = currentMonth;
+    }
+    if (!selectedYear) {
+        selectedYear = currentYear;
+    }
+
+    let monthElement = document.getElementById("month");
+    let yearElement = document.getElementById("year");
+
+    if (monthElement) {
+        monthElement.value = selectedMonth;
+    } else {
+        console.error("Month dropdown not found!");
+    }
+
+    if (yearElement) {
+        yearElement.value = selectedYear;
+    } else {
+        console.error("Year input field not found!");
+    }
+}
+
+// Image modal functions
+function showImage(src) {
+    let modal = document.getElementById("imageModal");
+    let fullImage = document.getElementById("fullImage");
+
+    if (modal && fullImage) {
+        fullImage.src = src;
+        modal.style.display = "flex";
+    } else {
+        console.error("Image modal elements not found!");
+    }
+}
+
+function hideImage() {
+    let modal = document.getElementById("imageModal");
+    if (modal) {
+        modal.style.display = "none";
+    } else {
+        console.error("Image modal element not found!");
+    }
+}
+
+</script>
+
+</body>
+</html>

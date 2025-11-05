@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        /* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1e1e2f, #2a2a4a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 20px;
+    color: #fff;
+}
+
+/* Form Container */
+.container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    max-width: 400px;
+    width: 100%;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Headings */
+h2 {
+    color: #ffcc00;
+    margin-bottom: 15px;
+}
+
+/* Input Fields */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    outline: none;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Button Styles */
+button {
+    background: linear-gradient(45deg, #ff6600, #ffcc00);
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.3s;
+    margin-top: 15px;
+    filter: brightness(90%);
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 6px rgba(255, 204, 0, 0.8);
+}
+
+/* Links */
+a {
+    text-decoration: none;
+    color: #ffcc00;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Error Message */
+p.error-message {
+    color: #ff4d4d;
+    font-weight: bold;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Register</h2>
+        {% if error_message %}
+            <p style="color: red;">{{ error_message }}</p>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="text" name="phone_number" placeholder="Phone Number" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            <button type="submit">Register</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form");
+            const phoneInput = document.querySelector("input[name='phone_number']");
+            const emailInput = document.querySelector("input[name='email']");
+            const passwordInput = document.querySelector("input[name='password']");
+            const confirmPasswordInput = document.querySelector("input[name='confirm_password']");
+    
+            form.addEventListener("submit", function (event) {
+                let isValid = true;
+                let errorMessage = "";
+    
+                // Phone number validation (must be exactly 10 digits)
+                const phonePattern = /^\d{10}$/;
+                if (!phonePattern.test(phoneInput.value)) {
+                    isValid = false;
+                    errorMessage += "Phone number must be exactly 10 digits.\n";
+                }
+    
+                // Email validation (must be in proper email format)
+                const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                if (!emailPattern.test(emailInput.value)) {
+                    isValid = false;
+                    errorMessage += "Enter a valid email address.\n";
+                }
+                // Password validation function
+            function isStrongPassword(password) {
+                const minLength = 8;
+                const hasUpperCase = /[A-Z]/.test(password);
+                const hasLowerCase = /[a-z]/.test(password);
+                const hasNumber = /\d/.test(password);
+                const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+                return password.length >= minLength && hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
+            }
+
+
+            // Strong password validation
+            if (!isStrongPassword(passwordInput.value)) {
+                isValid = false;
+                errorMessage += "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.\n";
+            }
+
+    
+                // Password confirmation validation
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    isValid = false;
+                    errorMessage += "Passwords do not match.\n";
+                }
+    
+                // If any validation fails, prevent form submission and show alert
+                if (!isValid) {
+                    event.preventDefault();
+                    alert(errorMessage);
+                }
+            });
+        });
+    </script>
+    
+</body>
+</html>
